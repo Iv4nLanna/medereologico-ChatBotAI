@@ -8,6 +8,8 @@ Plataforma de previsão do tempo com **API REST em Go** e **AI Agent em Next.js*
 ## Acesso ao projeto (deploy em produção)
 
 > Tudo já está deployado e funcionando. **Não é necessário rodar nada localmente para avaliar.**
+>
+> A API roda no plano gratuito do Render, que hiberna após 15 min sem tráfego. A **primeira** requisição pode levar ~50s enquanto o container sobe; as seguintes respondem normalmente. Se o chat demorar na primeira pergunta, é isso.
 
 ### Interface principal
 
@@ -23,14 +25,14 @@ Acesse o link acima e faça perguntas como:
 
 | Endpoint | Link |
 |---|---|
-| Health check | [chatbot-production-a38f.up.railway.app/health](https://chatbot-production-a38f.up.railway.app/health) |
-| Dashboard de métricas ao vivo | [chatbot-production-a38f.up.railway.app/debug](https://chatbot-production-a38f.up.railway.app/debug) |
-| Snapshot JSON de métricas | [chatbot-production-a38f.up.railway.app/metrics](https://chatbot-production-a38f.up.railway.app/metrics) |
+| Health check | [metereologico-chatbotai.onrender.com/health](https://metereologico-chatbotai.onrender.com/health) |
+| Dashboard de métricas ao vivo | [metereologico-chatbotai.onrender.com/debug](https://metereologico-chatbotai.onrender.com/debug) |
+| Snapshot JSON de métricas | [metereologico-chatbotai.onrender.com/metrics](https://metereologico-chatbotai.onrender.com/metrics) |
 
 Exemplos diretos via curl:
 ```bash
-curl "https://chatbot-production-a38f.up.railway.app/weather?city=São Paulo"
-curl "https://chatbot-production-a38f.up.railway.app/forecast?city=Lisboa&days=5"
+curl "https://metereologico-chatbotai.onrender.com/weather?city=São Paulo"
+curl "https://metereologico-chatbotai.onrender.com/forecast?city=Lisboa&days=5"
 ```
 
 ---
@@ -45,7 +47,7 @@ curl "https://chatbot-production-a38f.up.railway.app/forecast?city=Lisboa&days=5
 | LLM | Groq — llama-3.3-70b-versatile |
 | Dados meteorológicos | Open-Meteo API (gratuita, sem API key) |
 | Deploy frontend | Vercel |
-| Deploy backend | Railway |
+| Deploy backend | Render |
 
 ---
 
@@ -69,7 +71,7 @@ curl "https://chatbot-production-a38f.up.railway.app/forecast?city=Lisboa&days=5
                                       │ tool calls (server-side)
                                       ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              Go API  (Railway)                               │
+│              Go API  (Render)                                │
 │                                                             │
 │  ┌──────────┐  ┌───────────┐  ┌────────────────────────┐   │
 │  │ /weather │  │ /forecast │  │ /metrics  /debug        │   │
@@ -123,7 +125,7 @@ curl "https://chatbot-production-a38f.up.railway.app/forecast?city=Lisboa&days=5
 
 Dashboard embutido, sem dependências externas — sem Prometheus e sem Grafana. (Fiz isso pensando em facilitar no caso de ser um projeto pequeno, mas em produção, em um sistema escalável, seria imprescindível utilizar Grafana e Prometheus.)
 
-**Acesse ao vivo:** [chatbot-production-a38f.up.railway.app/debug](https://chatbot-production-a38f.up.railway.app/debug)
+**Acesse ao vivo:** [metereologico-chatbotai.onrender.com/debug](https://metereologico-chatbotai.onrender.com/debug)
 
 ```
 ┌──────────────┬──────────────┬───────────────────────┐
@@ -170,8 +172,8 @@ Framework HTTP mais adotado no ecossistema Go, middleware ecosystem maduro e per
 ### `log/slog` com JSON
 Stdlib do Go 1.21+, zero dependências externas. Saída JSON ingestível por qualquer stack de observabilidade (Loki, Datadog, CloudWatch).
 
-### Vercel + Railway
-Frontend (Vercel) chama a API (Railway) server-side — `GROQ_API_KEY` e `API_URL` nunca chegam ao browser. CI/CD automático via GitHub em ambos.
+### Vercel + Render
+Frontend (Vercel) chama a API (Render) server-side — `GROQ_API_KEY` e `API_URL` nunca chegam ao browser. CI/CD automático via GitHub em ambos.
 
 ---
 
